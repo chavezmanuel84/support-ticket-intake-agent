@@ -48,10 +48,12 @@ export function buildSystemPrompt(language: AnalysisLanguage): string {
   const languageInstruction =
     language === "es"
       ? `Language instruction:
-- Write all natural-language text fields in Spanish: ticket_summary, reasoning, and each item in missing_information.
+- Write all generated natural-language text fields in Spanish: reasoning and each item in missing_information.
+- Preserve the original ticket_summary exactly as provided. Do not translate, paraphrase, or rewrite it.
 - Do NOT translate JSON field names or enum literal values.`
       : `Language instruction:
-- Write all natural-language text fields in English: ticket_summary, reasoning, and each item in missing_information.
+- Write all generated natural-language text fields in English: reasoning and each item in missing_information.
+- Preserve the original ticket_summary exactly as provided. Do not translate, paraphrase, or rewrite it.
 - Do NOT translate JSON field names or enum literal values.`;
 
   return `${BASE_SYSTEM_PROMPT}\n\n${languageInstruction}`;
