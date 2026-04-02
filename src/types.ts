@@ -10,6 +10,42 @@ export type SuggestedNextAction =
 
 export type SuggestedPriority = "low" | "medium" | "high" | "highest";
 
+export type JiraIssueOptionValue = {
+  id?: string;
+  value?: string;
+  name?: string;
+};
+
+export type JiraIssueFields = {
+  summary?: string | null;
+  priority?: { name?: string | null } | null;
+  labels?: string[] | null;
+  customfield_10507?: unknown;
+  customfield_10776?: unknown;
+  customfield_11598?: unknown;
+  customfield_11632?: unknown;
+};
+
+export type JiraRenderedFields = {
+  description?: string | null;
+};
+
+export type JiraEditMeta = {
+  fields?: Record<
+    string,
+    {
+      allowedValues?: JiraIssueOptionValue[];
+    }
+  >;
+};
+
+export type JiraIssueResponse = {
+  key: string;
+  fields: JiraIssueFields;
+  renderedFields?: JiraRenderedFields;
+  editmeta?: JiraEditMeta;
+};
+
 export type NormalizedTicket = {
   issueKey: string;
   summary: string | null;
@@ -37,11 +73,4 @@ export type TicketAnalysis = {
   confidence: "low" | "medium" | "high";
   reasoning: string;
   suggested_priority: SuggestedPriority;
-};
-
-export type PlaceholderResult = {
-  status: "placeholder";
-  message: string;
-  issueKey: string;
-  phase: "phase1-foundation";
 };

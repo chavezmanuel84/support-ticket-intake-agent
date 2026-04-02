@@ -53,7 +53,7 @@ Optional **English / Spanish** responses (see `docs/plan-agent.md`) can be imple
 ## 4. Jira Request Contract
 - Endpoint: `GET /rest/api/3/issue/{issueKey}`
 - Required query params:
-  - `fields=summary,priority,labels,customfield_10507,customfield_10776,customfield_11598,customfield_11632`
+  - `fields=summary,description,priority,labels,customfield_10507,customfield_10776,customfield_11598,customfield_11632`
   - `expand=renderedFields,editmeta`
 - Auth: Jira email + API token (Basic auth) or documented org-approved equivalent
 - Error mapping:

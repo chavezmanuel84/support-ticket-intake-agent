@@ -3,17 +3,25 @@ import { z } from "zod";
 
 dotenv.config({ quiet: true });
 
-const envSchema = z.object({
+const jiraEnvSchema = z.object({
   JIRA_BASE_URL: z.string().url(),
   JIRA_EMAIL: z.string().min(1),
-  JIRA_API_TOKEN: z.string().min(1),
+  JIRA_API_TOKEN: z.string().min(1)
+});
+
+const modelEnvSchema = z.object({
   OPENROUTER_API_KEY: z.string().min(1),
   OPENROUTER_MODEL: z.string().min(1),
   OPENROUTER_BASE_URL: z.string().url()
 });
 
-export type AppEnv = z.infer<typeof envSchema>;
+export type JiraEnv = z.infer<typeof jiraEnvSchema>;
+export type ModelEnv = z.infer<typeof modelEnvSchema>;
 
-export function getEnv(): AppEnv {
-  return envSchema.parse(process.env);
+export function getJiraEnv(): JiraEnv {
+  return jiraEnvSchema.parse(process.env);
+}
+
+export function getModelEnv(): ModelEnv {
+  return modelEnvSchema.parse(process.env);
 }

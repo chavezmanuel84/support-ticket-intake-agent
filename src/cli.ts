@@ -1,4 +1,6 @@
-import type { PlaceholderResult } from "./types.js";
+import { fetchIssue } from "./jira/fetchIssue.js";
+import { normalizeIssue } from "./jira/normalizeIssue.js";
+import type { NormalizedTicket } from "./types.js";
 
 function getIssueKeyFromArgs(argv: string[]): string {
   const issueKey = argv[2];
@@ -8,24 +10,29 @@ function getIssueKeyFromArgs(argv: string[]): string {
   return issueKey.trim();
 }
 
-function buildPlaceholderResult(issueKey: string): PlaceholderResult {
+function buildSuccessResult(issueKey: string, normalizedTicket: NormalizedTicket): {
+  status: "success";
+  phase: "phase2-jira-integration";
+  issueKey: string;
+  normalizedTicket: NormalizedTicket;
+} {
   return {
-    status: "placeholder",
-    message:
-      "Phase 1 foundation flow executed. Jira integration and agent reasoning are not implemented yet.",
+    status: "success",
     issueKey,
-    phase: "phase1-foundation"
+    phase: "phase2-jira-integration",
+    normalizedTicket
   };
 }
 
 async function main(): Promise<void> {
   try {
     const issueKey = getIssueKeyFromArgs(process.argv);
-    const placeholder = buildPlaceholderResult(issueKey);
-    console.log(JSON.stringify(placeholder, null, 2));
-    return;
+    const issue = await fetchIssue(issueKey);
+    const normalizedTicket = normalizeIssue(issue);
+    const successResult = buildSuccessResult(issueKey, normalizedTicket);
+    console.log(JSON.stringify(successResult, null, 2));
   } catch (error) {
-    let message = "Unexpected failure during Phase 1 stub flow.";
+    let message = "Unexpected failure during Phase 2 Jira integration flow.";
 
     if (error instanceof Error) {
       message = error.message;
@@ -33,7 +40,7 @@ async function main(): Promise<void> {
 
     const controlledError = {
       status: "error",
-      phase: "phase1-foundation",
+      phase: "phase2-jira-integration",
       message
     };
 
