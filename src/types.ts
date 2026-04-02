@@ -9,6 +9,7 @@ export type SuggestedNextAction =
   | "ask_cx_for_additional_information";
 
 export type SuggestedPriority = "low" | "medium" | "high" | "highest";
+export type AnalysisLanguage = "en" | "es";
 
 export type JiraIssueOptionValue = {
   id?: string;
@@ -18,6 +19,7 @@ export type JiraIssueOptionValue = {
 
 export type JiraIssueFields = {
   summary?: string | null;
+  status?: { name?: string | null } | null;
   priority?: { name?: string | null } | null;
   labels?: string[] | null;
   customfield_10507?: unknown;
@@ -50,6 +52,7 @@ export type NormalizedTicket = {
   issueKey: string;
   summary: string | null;
   description: string | null;
+  status: string | null;
   priority: string | null;
   labels: string[];
   clientId: string | null;
@@ -73,4 +76,17 @@ export type TicketAnalysis = {
   confidence: "low" | "medium" | "high";
   reasoning: string;
   suggested_priority: SuggestedPriority;
+};
+
+export type Phase3SuccessResult = {
+  status: "success";
+  phase: "phase3-agent-analysis";
+  issueKey: string;
+  analysis: TicketAnalysis;
+};
+
+export type ControlledErrorResult = {
+  status: "error";
+  phase: "phase3-agent-analysis";
+  message: string;
 };

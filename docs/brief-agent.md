@@ -60,6 +60,7 @@ The agent receives a Jira issue key corresponding to a ticket in the PRODG board
 
 - fields.summary (summary)
 - renderedFields.description (description)
+- fields.status.name (status)
 - fields.priority.name (priority)
 - fields.labels (labels)
 - fields.customfield_10507 (ClientId)

@@ -4,7 +4,7 @@ import { ZodError } from "zod";
 
 const ISSUE_KEY_PATTERN = /^[A-Z][A-Z0-9]+-\d+$/;
 const JIRA_FIELDS =
-  "summary,description,priority,labels,customfield_10507,customfield_10776,customfield_11598,customfield_11632";
+  "summary,description,status,priority,labels,customfield_10507,customfield_10776,customfield_11598,customfield_11632";
 const JIRA_EXPAND = "renderedFields,editmeta";
 
 function buildIssueUrl(baseUrl: string, issueKey: string): URL {

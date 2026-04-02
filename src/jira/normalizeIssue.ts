@@ -17,17 +17,32 @@ function toTrimmedString(value: unknown): string | null {
 }
 
 function toOptionString(value: unknown): string | null {
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const candidate = toOptionString(item);
+      if (candidate) {
+        return candidate;
+      }
+    }
+    return null;
+  }
+
   const direct = toTrimmedString(value);
   if (direct) {
     return direct;
   }
 
   if (value && typeof value === "object") {
-    const option = value as JiraIssueOptionValue;
+    const option = value as JiraIssueOptionValue & {
+      child?: unknown;
+      children?: unknown;
+    };
     return (
       toTrimmedString(option.value) ??
       toTrimmedString(option.name) ??
-      toTrimmedString(option.id)
+      toTrimmedString(option.id) ??
+      toOptionString(option.child) ??
+      toOptionString(option.children)
     );
   }
 
@@ -67,6 +82,7 @@ function getAllowedValues(editmeta: JiraEditMeta | undefined, fieldId: string): 
 export function normalizeIssue(issue: JiraIssueResponse): NormalizedTicket {
   const summary = toTrimmedString(issue.fields.summary);
   const description = toTrimmedString(issue.renderedFields?.description);
+  const status = toTrimmedString(issue.fields.status?.name);
   const priority = toTrimmedString(issue.fields.priority?.name);
   const labels = Array.isArray(issue.fields.labels)
     ? issue.fields.labels.filter(
@@ -78,6 +94,7 @@ export function normalizeIssue(issue: JiraIssueResponse): NormalizedTicket {
     issueKey: issue.key,
     summary,
     description,
+    status,
     priority,
     labels,
     clientId: toOptionString(issue.fields.customfield_10507),
