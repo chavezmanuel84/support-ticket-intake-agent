@@ -58,10 +58,10 @@ L3 Business Analyst and Product Manager, who will use the agent to obtain struct
 
 The agent receives a Jira issue key corresponding to a ticket in the PRODG board and retrieves the following fields:
 
-- fields.summary
-- renderedFields.description
-- fields.priority.name
-- fields.labels
+- fields.summary (summary)
+- renderedFields.description (description)
+- fields.priority.name (priority)
+- fields.labels (labels)
 - fields.customfield_10507 (ClientId)
 - fields.customfield_10776 (MRR)
 - fields.customfield_11598 (Affected Product)
@@ -85,6 +85,7 @@ Structured JSON with the following fields:
 | `suggested_next_action` | One of the enum values listed below |
 | `confidence` | Union of literals: `low`, `medium`, `high` |
 | `reasoning` | `string` |
+| `suggested_priority` | Union of literals: `low`, `medium`, `high`, `highest` |
 
 `suggested_next_action` must be one of:
 

@@ -48,7 +48,7 @@ The solution must:
   - completeness assessment  
   - missing information  
   - probable product and subproduct (when justified)  
-  - priority assessment  
+  - suggested priority (using allowed literal values from `docs/brief-agent.md`)  
   - next handling action  
 - Strict validation of configuration before execution  
 - Support for English (default) and Spanish (optional) responses  
@@ -161,6 +161,7 @@ Implement the reasoning layer that analyzes ticket data and produces structured 
 
 - Define system prompt (role, scope, constraints)  
 - Define output schema and enforce JSON structure  
+- Enforce literal-value validation for `suggested_priority` and `suggested_next_action`
 - Implement LangChain-based analysis flow  
 - Pass normalized data and allowed values into agent context  
 - Validate and sanitize agent outputs  
@@ -190,7 +191,8 @@ Ensure stability, safety, and correct behavior across scenarios.
 - Test normal cases  
 - Test incomplete tickets  
 - Test ambiguous tickets  
-- Validate output format and tone  
+- Validate output format and tone
+- Validate enum/literal compliance for `suggested_priority` and `suggested_next_action`
 - Verify input constraints  
 - Test safety for unsupported inputs  
 - Confirm no unsafe recommendations  
@@ -255,6 +257,8 @@ The project is considered complete when:
 - Configuration is validated and documented  
 - Tests and validations pass without regressions  
 - Documentation reflects the real system behavior  
+- Output fields using union literals (including `suggested_priority`) are always schema-valid
+
 
 ---
 

@@ -77,6 +77,7 @@ The agent must reason only from **retrieved ticket data** and **editmeta** (and 
 - Do **not** infer product or subproduct without sufficient evidence; **editmeta** is the source of truth for allowed values.  
 - Do **not** present uncertain conclusions as certain; set **confidence** appropriately.  
 - Do **not** make **final** routing or prioritization decisions.  
+- `suggested_priority` is advisory only and must not be presented as a final prioritization decision.
 - Do **not** claim access to external systems (logs, history, databases, other tickets) unless that access exists in the product and is documented.  
 
 ### Uncertainty handling
@@ -94,6 +95,7 @@ The agent must reason only from **retrieved ticket data** and **editmeta** (and 
 - Return **structured JSON only** (machine-readable; suitable for logging and downstream tools).  
 - Output must **match** the schema in `docs/brief-agent.md`.  
 - **Only** defined fields; **only** allowed enum values.  
+- `suggested_priority` must be one of the allowed union literal values defined in `docs/brief-agent.md`.
 - **`reasoning`** must be concise and tied to evidence in the ticket (no fabricated references).
 
 ### Restrictions
@@ -101,6 +103,7 @@ The agent must reason only from **retrieved ticket data** and **editmeta** (and 
 - No prose outside the JSON envelope in the primary API/CLI contract.  
 - No extra undocumented fields.  
 - No enum values outside the defined sets.  
+- No out-of-set value for `suggested_priority` under any condition.
 - No fabricated product/subproduct strings—must align with ticket + **editmeta** when suggesting values.  
 - **No execution** of suggested actions (recommendation only).
 
@@ -195,6 +198,6 @@ The agent must reason only from **retrieved ticket data** and **editmeta** (and 
 
 - [ ] Issue key validated; ticket content treated as untrusted; prompt injection considered in prompt and code paths.  
 - [ ] No Jira writes; no undocumented network calls; secrets not logged.  
-- [ ] Output schema validated; enums enforced; no instruction overrides from ticket text.  
+- [ ] Output schema validated; union literals/enums enforced (including `suggested_priority` and `suggested_next_action`); no instruction overrides from ticket text.  
 - [ ] Failure modes return safe errors; no secret or prompt leakage in outputs.  
 - [ ] Docs above updated if behavior or integrations change.

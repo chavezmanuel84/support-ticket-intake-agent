@@ -13,7 +13,7 @@ Tickets live on the **Product (PRODG)** board; the CLI accepts a single Jira **i
 3. `src/jira/normalizeIssue.ts` maps the raw response into a stable internal shape for the agent (including allowed picklist values).
 4. `src/agent/analyzeTicket.ts` builds context and invokes the LangChain agent.
 5. The agent uses the chat model from `src/agent/model.ts` (OpenRouter), the agent instructions from `src/prompts/prompt.ts`, and project constraints.
-6. The agent analyzes the ticket and emits structured JSON aligned with the brief (validate structured output and fail clearly if invalid.).
+6. The agent analyzes the ticket and emits structured JSON aligned with `docs/brief-agent.md`, including `suggested_priority` as a recommendation (not a final decision), and fails clearly if output validation fails.
 7. The CLI prints the final JSON for the user.
 
 Configuration is loaded and validated in `src/config/env.ts` (Jira credentials, model/API keys, base URLs).
@@ -50,7 +50,25 @@ Optional **English / Spanish** responses (see `docs/plan-agent.md`) can be imple
 
 ---
 
-## 4. Constraints (architecture-level)
+## 4. Jira Request Contract
+- Endpoint: `GET /rest/api/3/issue/{issueKey}`
+- Required query params:
+  - `fields=summary,priority,labels,customfield_10507,customfield_10776,customfield_11598,customfield_11632`
+  - `expand=renderedFields,editmeta`
+- Auth: Jira email + API token (Basic auth) or documented org-approved equivalent
+- Error mapping:
+  - 400: malformed key
+  - 401/403: auth/permission failure
+  - 404: issue not found
+  - 429: rate limit
+  - 5xx: upstream Jira failure
+- Retry policy:
+  - No retry for 4xx (except optional bounded retry for 429)
+  - Bounded backoff retry for transient 5xx/timeouts
+- Normalization rule:
+  - Missing/null custom fields are normalized explicitly (no implicit fabrication)
+
+## 5. Constraints (architecture-level)
 
 These follow `docs/brief-agent.md`:
 
@@ -61,7 +79,7 @@ These follow `docs/brief-agent.md`:
 
 ---
 
-## 5. Recommended evolution
+## 6. Recommended evolution
 
 Aligned with `docs/brief-agent.md` and `docs/plan-agent.md` (future-facing, not MVP commitments):
 
